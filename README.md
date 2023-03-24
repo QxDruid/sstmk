@@ -1,2 +1,0 @@
-# sstmk
-sstmk server
