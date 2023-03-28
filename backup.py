@@ -1,4 +1,3 @@
-from queue import PriorityQueue
 from bottle import Bottle, request, run, response
 import requests 
 from jinja2 import Template, FileSystemLoader, Environment
@@ -8,30 +7,8 @@ import re
 import cv2
 import base64 
 import OPi.GPIO as GPIO
+from config import Config
 
-class Config():
-    def __init__(self):
-        self.ip_addr = "192.168.10.25"
-        self.port = 10000
-
-        self.Capabilities = {
-            "ip_addr":f'{self.ip_addr}:{self.port}'
-        }
-
-        self.DeviceInformation = {
-            'Manufacturer':"Smiths Detection",
-            'Model':"HS6040i",
-            'FirmwareVersion':"HX-03",
-            'SerialNumber':"150453",
-            'HardwareId':"HiTrax"
-        }
-
-        self.Scopes = [
-            {'ScopeDef':"Fixed",
-            'ScopeItem':"onvif://www.onvif.org/manufacturer/SmithDetection"},
-            {'ScopeDef':"Fixed",
-            'ScopeItem':"onvif://www.onvif.org/location/Russia"},
-            ]
 
 
 configuration = Config()
@@ -55,7 +32,7 @@ def buttonWait():
 
 def getScreenCapture():
     # define a video capture object
-    Camera = cv2.VideoCapture(0)
+    Camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
     time.sleep(0.5)
     return_value, image = Camera.read()
     print(f"videocap: {return_value}")
@@ -68,6 +45,7 @@ def getScreenCapture():
 
 def NotifyRequest(NotifyRequestData):
     res = buttonWait()
+    GPIO.output(26, True)
     print(f"buttomwait = {res}")
     if res == None:
         return False
@@ -78,8 +56,6 @@ def NotifyRequest(NotifyRequestData):
 
     requests.post(NotifyRequestData['notify_addr'], data=request)
 
-    GPIO.output(26, True)
-    time.sleep(2)
     GPIO.output(26, False)
 
     return True
@@ -158,6 +134,3 @@ def connect():
 
 if __name__ == "__main__":
     run(app, host=configuration.ip_addr, port=configuration.port, debug=True)
-
-
-

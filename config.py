@@ -1,8 +1,7 @@
-
 class Config():
     def __init__(self):
-        self.ip_addr = "192.168.10.23"
-        self.port = "10000"
+        self.ip_addr = "192.168.10.25"
+        self.port = 10000
 
         self.Capabilities = {
             "ip_addr":f'{self.ip_addr}:{self.port}'
