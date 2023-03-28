@@ -10,6 +10,7 @@ mkdir /usr/bin/cctmk
 cp config.py /usr/bin/cctmk/
 cp cctmk.py /usr/bin/cctmk/
 cp app.py /usr/bin/cctmk/
+cp templates/* /usr/bin/cctmk/templates/
 
 cp cctmk.service /etc/systemd/system/
 systemctl daemon-reload
