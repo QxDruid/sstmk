@@ -1,3 +1,4 @@
+from queue import PriorityQueue
 from bottle import Bottle, request, run, response
 import requests 
 from jinja2 import Template, FileSystemLoader, Environment
@@ -44,7 +45,6 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(26, GPIO.OUT)
 led_status = False
-Camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
 
 def buttonWait():
     res  = GPIO.wait_for_edge(22, GPIO.FALLING, 600000)
@@ -55,13 +55,15 @@ def buttonWait():
 
 def getScreenCapture():
     # define a video capture object
-    #Camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    Camera = cv2.VideoCapture(0)
+    time.sleep(0.5)
     return_value, image = Camera.read()
+    print(f"videocap: {return_value}")
     cv2.imwrite("test.png", image)
-    #Camera.release()
-    #cv2.destroyAllWindows()
     with open("test.png", "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
+    
+    Camera.release()
     return my_string
 
 def NotifyRequest(NotifyRequestData):
@@ -73,10 +75,8 @@ def NotifyRequest(NotifyRequestData):
     NotifyRequestData['time'] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     template = env.get_template('NotifyRequest.xml')
     request = template.render(data = NotifyRequestData)
-    print(request)
 
     requests.post(NotifyRequestData['notify_addr'], data=request)
-    print("end Thread")
 
     GPIO.output(26, True)
     time.sleep(2)
