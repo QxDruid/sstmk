@@ -1,0 +1,5 @@
+bottle==0.12.25
+Jinja2==3.1.2
+numpy==1.21.5
+OPi.GPIO==0.5.2
+requests==2.28.2

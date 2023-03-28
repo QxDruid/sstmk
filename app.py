@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from bottle import Bottle, request, run, response
 
 
@@ -15,7 +16,7 @@ def connect():
     if soap_action:
         soap_action = soap_action.split('/')[-1]
     request_data = request.body.getvalue().decode('utf-8')
-
+    
     response.set_header("SOAPAction",f"http://www.onvif.org/ver10/device/wsdl/{soap_action}")
     response.content_type = f'application/soap+xml;  charset=utf-8; action="http://www.onvif.org/ver10/device/wsdl/{soap_action}"'
     resp = cctmk.Run(soap_action, request_data)

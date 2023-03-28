@@ -90,8 +90,8 @@ class CCTMK():
         elif soap_action == "GetServiceCapabilitiesRequest":
             resp = self.GetServiceCapabilitiesResponse()
         else:
-            response.set_header("SOAPAction","http://www.onvif.org/ver10/device/wsdl/SubscribeResponse")
-            response.content_type = 'application/soap+xml;  charset=utf-8; action="http://www.onvif.org/ver10/device/wsdl/SubscribeResponse"'
+            #response.set_header("SOAPAction","http://www.onvif.org/ver10/device/wsdl/SubscribeResponse")
+            #response.content_type = 'application/soap+xml;  charset=utf-8; action="http://www.onvif.org/ver10/device/wsdl/SubscribeResponse"'
 
             sec_utc = time.time()
             subscribe_data = {
