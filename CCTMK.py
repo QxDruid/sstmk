@@ -10,8 +10,8 @@ import OPi.GPIO as GPIO
 
 class Config():
     def __init__(self):
-        self.ip_addr = "192.168.10.23"
-        self.port = "10000"
+        self.ip_addr = "192.168.10.25"
+        self.port = 10000
 
         self.Capabilities = {
             "ip_addr":f'{self.ip_addr}:{self.port}'
@@ -33,10 +33,6 @@ class Config():
             ]
 
 
-
-HOST = "192.168.10.23"  # Standard loopback interface address (localhost)
-PORT = 10000  # Port to listen on (non-privileged ports are > 1023)
-
 configuration = Config()
 file_loader = FileSystemLoader('templates')
 env = Environment(loader=file_loader)
@@ -45,12 +41,12 @@ env = Environment(loader=file_loader)
 GPIO.cleanup()
 
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(22, GPIO.IN)
+GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(26, GPIO.OUT)
 led_status = False
 
 def buttonWait():
-    res  = GPIO.wait_for_edge(22, GPIO.FALLING, 600)
+    res  = GPIO.wait_for_edge(22, GPIO.FALLING, 600000)
     if res:
         return True
     else:
@@ -68,9 +64,8 @@ def getScreenCapture():
     return my_string
 
 def NotifyRequest(NotifyRequestData):
-    start_time = time.time()
-
     res = buttonWait()
+    print(f"buttomwait = {res}")
     if res == None:
         return False
     NotifyRequestData['image'] = getScreenCapture().decode()
@@ -120,11 +115,6 @@ def connect():
         soap_action = soap_action.split('/')[-1]
     request_data = request.body.getvalue().decode('utf-8')
 
-    print('-'*50)
-    #print(request_data)
-    print('-'*50)
-
-
     response.set_header("SOAPAction",f"http://www.onvif.org/ver10/device/wsdl/{soap_action}")
     response.content_type = f'application/soap+xml;  charset=utf-8; action="http://www.onvif.org/ver10/device/wsdl/{soap_action}"'
     
@@ -166,7 +156,7 @@ def connect():
 
 
 if __name__ == "__main__":
-    run(app, host='192.168.10.23', port=10000, debug=True)
+    run(app, host=configuration.ip_addr, port=configuration.port, debug=True)
 
 
 
