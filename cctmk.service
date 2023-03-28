@@ -1,0 +1,13 @@
+[Unit]
+Description=CCTMK imitator service
+After=multi-user.target
+ 
+[Service]
+User=user
+Group=user
+Restart=always
+WorkingDirectory=/usr/bin/cctmk/
+ExecStart=/usr/bin/python3 /usr/bin/cctmk/app.py
+ 
+[Install]
+WantedBy=multi-user.target
