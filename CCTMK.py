@@ -44,6 +44,7 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(26, GPIO.OUT)
 led_status = False
+Camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
 
 def buttonWait():
     res  = GPIO.wait_for_edge(22, GPIO.FALLING, 600000)
@@ -54,11 +55,11 @@ def buttonWait():
 
 def getScreenCapture():
     # define a video capture object
-    Camera = cv2.VideoCapture(0)
+    #Camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
     return_value, image = Camera.read()
     cv2.imwrite("test.png", image)
-    Camera.release()
-    cv2.destroyAllWindows()
+    #Camera.release()
+    #cv2.destroyAllWindows()
     with open("test.png", "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
     return my_string
